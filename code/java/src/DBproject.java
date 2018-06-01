@@ -778,24 +778,36 @@ public class DBproject{
 
 	public static void BookFlight(DBproject esql) {//5
 		// Given a customer and a flight that he/she wants to book, add a reservation to the DB
-		int rnum;
-		int cid;
-		int fid;
-		char status; //'w', 'c', or 'r'
-		do{
-			System.out.print("Please enter the technician's full name: ");
-			full_name = in.readLine();
-			if(full_name.length() > 128){
-			   System.out.println("Please re-enter. The technician's name must be entered in 128 characters or less.");
-			}
-			else if(full_name.length() == 0){
-			   System.out.println("Please re-enter. The technician's name cannot be null.");
-
-			}
-			else{
-			   break;
-			}
+		int rnum; // reservation number
+		int cid; // customer id
+		int fid; // flight id
+		char status; // 'w', 'c', or 'r'
+		
+		//we assign the rnum
+		
+		do {
+			System.out.print("Please enter the customer ID: ");
+			try { // read the integer, parse it and break.
+				cid = Integer.parseInt(in.readLine());
+			}catch (Exception e) {
+				System.out.println("Please re-enter. The customer ID is an integer.");
+				continue;
+			}//end try
 		}while (true);
+		
+		//find customer ID
+		
+		do {
+			System.out.print("Please enter the customer ID: ");
+			try { // read the integer, parse it and break.
+				cid = Integer.parseInt(in.readLine());
+			}catch (Exception e) {
+				System.out.println("Please re-enter. The customer ID is an integer.");
+				continue;
+			}//end try
+		}while (true);
+		
+		//find customer ID
 	}
 
 	public static void ListNumberOfAvailableSeats(DBproject esql) {//6
