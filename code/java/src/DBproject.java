@@ -321,6 +321,7 @@ public class DBproject{
 		
 		do{
 			System.out.print("Please enter the plane's make: ");
+			try {
 			make = in.readLine();
 			if(make.length() > 32){
 			   System.out.println("Please re-enter. The plane's make must be 32 characters or less.");
@@ -331,10 +332,15 @@ public class DBproject{
 			else{
 			   break;
 			}
+			} catch (Exception e) {
+				System.out.println("readLine error");
+				continue;
+			}
 		}while (true);
 		
 		do{
 			System.out.print("Please enter the plane's model: ");
+			try {
 			model = in.readLine();
 			if(model.length() > 64){
 			   System.out.println("Please re-enter. The plane's model must be 64 characters or less.");
@@ -345,6 +351,10 @@ public class DBproject{
 			}
 			else{
 			   break;
+			}
+			} catch (Exception e) {
+				System.out.println("readLine error");
+				continue;
 			}
 		}while (true);
 		
@@ -383,9 +393,14 @@ public class DBproject{
 			}//end try
 		}while (true);
 		
-		/*executeUpdate("INSERT INTO Plane(id, make, model, age, seats) " +
-		               "VALUES (" + String.valueOf(id) + ", " + make + ", " + model + ", " + String.valueOf(age) + ", " + String.valueOf(seats) + ");");
-		               */
+		try { 
+			id = 67;
+			String query = "INSERT INTO Plane (id, make, model, age, seats) " +
+		               "VALUES (" + String.valueOf(age) + ", \'" + make + "\', \'" + model + "\', " + String.valueOf(age) + ", " + String.valueOf(seats) + ");";
+			esql.executeUpdate(query);
+		} catch (SQLException e) {
+			System.err.println (e.getMessage());
+		}          
 		System.out.println("Your entry has been added to the database.\n\n"
 		                     + "New Plane with ID " + "???"
 		                     + "\nMake: " + make
@@ -395,6 +410,7 @@ public class DBproject{
 		                     );
 		                     
 		//what if they need to edit?
+		// FIXME : increment ID
 	}
 
 	public static void AddPilot(DBproject esql) {//2
@@ -417,6 +433,7 @@ public class DBproject{
 		
 		do{
 			System.out.print("Please enter the pilot's full name: ");
+			try {
 			fullname = in.readLine();
 			if(fullname.length() > 128){
 			   System.out.println("Please re-enter. The pilot's name must be entered in 128 characters or less.");
@@ -424,10 +441,15 @@ public class DBproject{
 			else{
 			   break;
 			}
+			} catch (Exception e) {
+				System.out.println("readLine error");
+				continue;
+			}
 		}while (true);
 		
 		do{
 			System.out.print("Please enter the pilot's nationality: ");
+			try {
 			nationality = in.readLine();
 			if(nationality.length() > 24){
 			   System.out.println("Please re-enter. The pilot's nationality must be 24 characters or less.");
@@ -435,11 +457,20 @@ public class DBproject{
 			else{
 			   break;
 			}
+			} catch (Exception e) {
+				System.out.println("readLine error");
+				continue;
+			}
 		}while (true);
 		
-		/*executeUpdate("INSERT INTO Pilot(id, fullname, nationality) " +
-               "VALUES (" + String.valueOf(id) + ", " + fullname + ", " + nationality + ");");
-               */
+		try {
+			id = 250;
+			esql.executeUpdate("INSERT INTO Pilot(id, fullname, nationality) " +
+					"VALUES (" + String.valueOf(id) + ", \'" + fullname + "\', \'" + nationality + "\');");
+               
+        } catch (SQLException e) {
+			System.err.println (e.getMessage());
+		} 
       
       System.out.println("Your entry has been added to the database.\n\n"
 		                     + "New Pilot with ID " + "???"
@@ -634,6 +665,7 @@ public class DBproject{
 		
 		do{
 			System.out.print("Please enter the code of the arrival airport: ");
+			try {
 			arrival_airport = in.readLine();
 			if(arrival_airport.length() > 5){
 			   System.out.println("Please re-enter. The arrival airport code must be 5 characters or less.");
@@ -644,10 +676,15 @@ public class DBproject{
 			else{
 			   break;
 			}
+			} catch (Exception e) {
+				System.out.println("readLine error");
+				continue;
+			}
 		}while (true);
 		
 		do{
 			System.out.print("Please enter the code of the departure airport: ");
+			try {
 			departure_airport = in.readLine();
 			if(departure_airport.length() > 5){
 			   System.out.println("Please re-enter. The departure airport code must be characters or less.");
@@ -658,6 +695,10 @@ public class DBproject{
 			}
 			else{
 			   break;
+			}
+			} catch (Exception e) {
+				System.out.println("readLine error");
+				continue;
 			}
 		}while (true);
 		
@@ -753,6 +794,7 @@ public class DBproject{
 		
 		do{
 			System.out.print("Please enter the technician's full name: ");
+			try {
 			full_name = in.readLine();
 			if(full_name.length() > 128){
 			   System.out.println("Please re-enter. The technician's name must be entered in 128 characters or less.");
@@ -763,6 +805,10 @@ public class DBproject{
 			}
 			else{
 			   break;
+			}
+			} catch (Exception e) {
+				System.out.println("readLine error");
+				continue;
 			}
 		}while (true);
 		
@@ -789,6 +835,7 @@ public class DBproject{
 			System.out.print("Please enter the customer ID: ");
 			try { // read the integer, parse it and break.
 				cid = Integer.parseInt(in.readLine());
+				break;
 			}catch (Exception e) {
 				System.out.println("Please re-enter. The customer ID is an integer.");
 				continue;
@@ -801,6 +848,7 @@ public class DBproject{
 			System.out.print("Please enter the flight ID: ");
 			try { // read the integer, parse it and break.
 				fid = Integer.parseInt(in.readLine());
+				break;
 			}catch (Exception e) {
 				System.out.println("Please re-enter. The flight ID is an integer.");
 				continue;
