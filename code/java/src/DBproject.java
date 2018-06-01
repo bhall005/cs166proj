@@ -798,16 +798,16 @@ public class DBproject{
 		//find customer ID
 		
 		do {
-			System.out.print("Please enter the customer ID: ");
+			System.out.print("Please enter the flight ID: ");
 			try { // read the integer, parse it and break.
-				cid = Integer.parseInt(in.readLine());
+				fid = Integer.parseInt(in.readLine());
 			}catch (Exception e) {
-				System.out.println("Please re-enter. The customer ID is an integer.");
+				System.out.println("Please re-enter. The flight ID is an integer.");
 				continue;
 			}//end try
 		}while (true);
 		
-		//find customer ID
+		//find flight ID
 	}
 
 	public static void ListNumberOfAvailableSeats(DBproject esql) {//6
