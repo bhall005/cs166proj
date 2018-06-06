@@ -94,8 +94,6 @@ public class DBproject{
 		int numCol = rsmd.getColumnCount ();
 		int rowCount = 0;
 		
-		System.out.println("TESTING executeQueryAndPrintResult before");
-		
 		//iterates through the result set and output them to standard out.
 		boolean outputHeader = true;
 		while (rs.next()){
@@ -113,7 +111,6 @@ public class DBproject{
 		}//end while
 		stmt.close ();
 		
-		System.out.println("TESTING executeQueryAndPrintResult after");
 		return rowCount;
 	}
 	
@@ -892,7 +889,7 @@ public class DBproject{
 		//no statement to get fiid
 		try {
 		   //Insert values into tables
-			esql.executeUpdate("INSERT INTO Flight(fnum, cost, numsold, numstops, actualarrivaldate, actualdeparturedate, arrivalairport, departureairport) VALUES (\'"
+			esql.executeUpdate("INSERT INTO Flight(fnum, cost, num_sold, num_stops, actual_arrival_date, actual_departure_date, arrival_airport, departure_airport) VALUES (\'"
 			                  + String.valueOf(fnum) + "\', \'"
 			                  + String.valueOf(cost) + "\', \'"
 			                  + String.valueOf(numsold) + "\', \'"
@@ -903,14 +900,14 @@ public class DBproject{
 			                  + String.valueOf(departureairport)
                            + "\');");
                               
-         esql.executeUpdate("INSERT INTO FlightInfo(fiid, flightid, pilotid, planeid) VALUES (\'"
+         esql.executeUpdate("INSERT INTO FlightInfo(fiid, flight_id, pilot_id, plane_id) VALUES (\'"
                            + String.valueOf(fiid) + "\', \'"
                            + String.valueOf(fnum) + "\', \'"
                            + String.valueOf(pilotid) + "\', \'"
                            + String.valueOf(planeid)
                            + "\');");
                            
-         esql.executeUpdate("INSERT INTO Schedule(id, flightnum, departuretime, arrivaltime) VALUES (\'"
+         esql.executeUpdate("INSERT INTO Schedule(id, flightNum, departure_time, arrival_time) VALUES (\'"
                            + String.valueOf(id) + "\', \'"
                            + String.valueOf(fnum) + "\', \'"
                            + departureDate + "\', \'"
@@ -982,7 +979,7 @@ public class DBproject{
 		}while (true);
 		
 		try {
-			esql.executeUpdate("INSERT INTO Technician(id, fullname) VALUES (\'" + String.valueOf(id) + "\', \'" + fullname + "\');");
+			esql.executeUpdate("INSERT INTO Technician(id, full_name) VALUES (\'" + String.valueOf(id) + "\', \'" + fullname + "\');");
                
          System.out.println("Your entry has been added to the database.\n\n"
             + "New Technician with ID " + "???"
