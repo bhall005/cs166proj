@@ -23,6 +23,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
 
 /**
  * This class defines a simple embedded SQL utility class that is designed to
@@ -169,7 +171,7 @@ public class DBproject{
 		int rowCount = 0;
 
 		//iterates through the result set and count nuber of results.
-		if(rs.next()){
+		while(rs.next()){
 			rowCount++;
 		}//end while
 		stmt.close ();
@@ -241,6 +243,8 @@ public class DBproject{
 			
 			esql = new DBproject (dbname, dbport, user, "");
 			
+			initIDs(esql);
+			
 			boolean keepon = true;
 			while(keepon){
 				System.out.println("MAIN MENU");
@@ -262,7 +266,7 @@ public class DBproject{
 					case 3: AddFlight(esql); break;
 					case 4: AddTechnician(esql); break;
 					case 5: BookFlight(esql); break;
-					case 6: ListNumberOfAvailableSeats(esql); break;
+					case 6: ListNumberOfAvailableSeats(esql, -1); break;
 					case 7: ListsTotalNumberOfRepairsPerPlane(esql); break;
 					case 8: ListTotalNumberOfRepairsPerYear(esql); break;
 					case 9: FindPassengersCountWithStatus(esql); break;
@@ -299,6 +303,222 @@ public class DBproject{
 		}while (true);
 		return input;
 	}//end readChoice
+	
+	private static int FlightID;
+	private static int PilotID;
+	private static int PlaneID;
+	private static int RepairID;
+	private static int TechnicianID;
+	private static int CustomerID;
+	private static int FlightInfoID;
+	private static int ReservationID;
+	private static int ScheduleID;
+	static Queue<Integer> FlightIDQ = new LinkedList<Integer>();
+	static Queue<Integer> PilotIDQ = new LinkedList<Integer>();
+	static Queue<Integer> PlaneIDQ = new LinkedList<Integer>();
+	static Queue<Integer> RepairIDQ = new LinkedList<Integer>();
+	static Queue<Integer> TechnicianIDQ = new LinkedList<Integer>();
+	static Queue<Integer> CustomerIDQ = new LinkedList<Integer>();
+	static Queue<Integer> FlightInfoIDQ = new LinkedList<Integer>();
+	static Queue<Integer> ReservationIDQ = new LinkedList<Integer>();
+	static Queue<Integer> ScheduleIDQ = new LinkedList<Integer>();
+	
+	/**
+	 * Method to assign the ids.
+	 * 
+	 * @return void
+	 * @throws java.sql.SQLException when failed to execute the query
+	 */
+	private static void initIDs(DBproject esql) {
+		try {
+		   FlightID = esql.executeQuery("SELECT * FROM Flight;") -1;
+		} catch (SQLException e) {
+			System.err.println (e.getMessage());
+		}
+		
+		try {
+		   PilotID = esql.executeQuery("SELECT * FROM Pilot;") -1;
+		} catch (SQLException e) {
+			System.err.println (e.getMessage());
+		}
+		
+		try {
+		   PlaneID = esql.executeQuery("SELECT * FROM Plane;") -1;
+		} catch (SQLException e) {
+			System.err.println (e.getMessage());
+		}
+		
+		try {
+		   RepairID = esql.executeQuery("SELECT * FROM Repairs;") -1;
+		} catch (SQLException e) {
+			System.err.println (e.getMessage());
+		}
+		
+		try {
+		   TechnicianID = esql.executeQuery("SELECT * FROM Technician;") -1;
+		} catch (SQLException e) {
+			System.err.println (e.getMessage());
+		}
+		
+		try {
+		   CustomerID = esql.executeQuery("SELECT * FROM Customer;") -1;
+		} catch (SQLException e) {
+			System.err.println (e.getMessage());
+		}
+		
+		try {
+		   FlightInfoID = esql.executeQuery("SELECT * FROM FlightInfo;") -1;
+		} catch (SQLException e) {
+			System.err.println (e.getMessage());
+		}
+		
+		try {
+		   ReservationID = esql.executeQuery("SELECT * FROM Reservation;") -1;
+		} catch (SQLException e) {
+			System.err.println (e.getMessage());
+		}
+		
+		try {
+		   ScheduleID = esql.executeQuery("SELECT * FROM Schedule;") -1;
+		} catch (SQLException e) {
+			System.err.println (e.getMessage());
+		}
+	}
+	
+	/**
+	 * Method to retrun the next Flight id and increment the value for an insert.
+	 * 
+	 * @return void
+	 * @throws java.sql.SQLException when failed to execute the query
+	 */
+	private static int getFlightID(DBproject esql) {
+		if(FlightIDQ.isEmpty()){
+			return ++FlightID;
+		}
+		else{
+			return FlightIDQ.remove();
+		}
+	}
+	
+	/**
+	 * Method to retrun the next Pilot id and increment the value for an insert.
+	 * 
+	 * @return void
+	 * @throws java.sql.SQLException when failed to execute the query
+	 */
+	private static int getPilotID(DBproject esql) {
+		if(PilotIDQ.isEmpty()){
+			return ++PilotID;
+		}
+		else{
+			return PilotIDQ.remove();
+		}
+	}
+	
+	/**
+	 * Method to retrun the next Plane id and increment the value for an insert.
+	 * 
+	 * @return void
+	 * @throws java.sql.SQLException when failed to execute the query
+	 */
+	private static int getPlaneID(DBproject esql) {
+		if(PlaneIDQ.isEmpty()){
+			return ++PlaneID;
+		}
+		else{
+			return PlaneIDQ.remove();
+		}
+	}
+	
+	/**
+	 * Method to retrun the next Repair id and increment the value for an insert.
+	 * 
+	 * @return void
+	 * @throws java.sql.SQLException when failed to execute the query
+	 */
+	private static int getRepairID(DBproject esql) {
+		if(RepairIDQ.isEmpty()){
+			return ++RepairID;
+		}
+		else{
+			return RepairIDQ.remove();
+		}
+	}
+	
+	/**
+	 * Method to retrun the next Technician id and increment the value for an insert.
+	 * 
+	 * @return void
+	 * @throws java.sql.SQLException when failed to execute the query
+	 */
+	private static int getTechnicianID(DBproject esql) {
+		if(TechnicianIDQ.isEmpty()){
+			return ++TechnicianID;
+		}
+		else{
+			return TechnicianIDQ.remove();
+		}
+	}
+	
+	/**
+	 * Method to retrun the next Customer id and increment the value for an insert.
+	 * 
+	 * @return void
+	 * @throws java.sql.SQLException when failed to execute the query
+	 */
+	private static int getCustomerID(DBproject esql) {
+		if(CustomerIDQ.isEmpty()){
+			return ++CustomerID;
+		}
+		else{
+			return CustomerIDQ.remove();
+		}
+	}
+	
+	/**
+	 * Method to retrun the next FlightInfo id and increment the value for an insert.
+	 * 
+	 * @return void
+	 * @throws java.sql.SQLException when failed to execute the query
+	 */
+	private static int getFlightInfoID(DBproject esql) {
+		if(FlightInfoIDQ.isEmpty()){
+			return ++FlightInfoID;
+		}
+		else{
+			return FlightInfoIDQ.remove();
+		}
+	}
+	
+	/**
+	 * Method to retrun the next Reservation id and increment the value for an insert.
+	 * 
+	 * @return void
+	 * @throws java.sql.SQLException when failed to execute the query
+	 */
+	private static int getReservationID(DBproject esql) {
+		if(ReservationIDQ.isEmpty()){
+			return ++ReservationID;
+		}
+		else{
+			return ReservationIDQ.remove();
+		}
+	}
+	
+	/**
+	 * Method to retrun the next Schedule id and increment the value for an insert.
+	 * 
+	 * @return void
+	 * @throws java.sql.SQLException when failed to execute the query
+	 */
+	private static int getScheduleID(DBproject esql) {
+		if(ScheduleIDQ.isEmpty()){
+			return ++ScheduleID;
+		}
+		else{
+			return ScheduleIDQ.remove();
+		}
+	}
 	
 	/**
 	 * Method to prompt the user to input a date (year, month, day).
@@ -388,25 +608,27 @@ public class DBproject{
 	public static int findFlight(DBproject esql) {
 	   int fid;
 	   do {
-				System.out.print("Please enter the flight ID: ");
-				try { // read the integer, parse it and break.
-					fid = Integer.parseInt(in.readLine());
-				} catch (Exception e) {
-					System.out.println("Please re-enter. The flight ID is an integer.");
-					continue;
-				}//end try
-				
-				
-				try {
-				   if(esql.executeQueryAndPrintResult("SELECT * FROM Flight WHERE fnum = " + String.valueOf(fid) + ";") < 1){
-					   System.out.println("Please re-enter. There is no flight with ID " + String.valueOf(fid) + ".");
-					}
-					else{
-					   break;
-					}
-			  } catch (SQLException e) {
-					System.err.println (e.getMessage());
+			System.out.print("Please enter the flight ID: ");
+			try { // read the integer, parse it and break.
+				fid = Integer.parseInt(in.readLine());
+			} catch (Exception e) {
+				System.out.println("Please re-enter. The flight ID is an integer.");
+				continue;
+			}//end try
+			
+			System.out.println("\n");
+			
+			try {
+			   if(esql.executeQueryAndPrintResult("SELECT * FROM Flight WHERE fnum = " + String.valueOf(fid) + ";") < 1){
+				   System.out.println("Please re-enter. There is no flight with ID " + String.valueOf(fid) + ".");
 				}
+				else{
+					System.out.println("\n");
+					break;
+				}
+			} catch (SQLException e) {
+				System.err.println (e.getMessage());
+			}
 		}while (true);
 		
 		return fid;
@@ -423,25 +645,27 @@ public class DBproject{
 	public static int findPilot(DBproject esql) {
 		int pid;
 		 do {
-				System.out.print("Please enter the pilot ID: ");
-				try { // read the integer, parse it and break.
-					pid = Integer.parseInt(in.readLine());
-				} catch (Exception e) {
-					System.out.println("Please re-enter. The pilot ID is an integer.");
-					continue;
-				}//end try
-				
-				
-				try {
-				   if(esql.executeQueryAndPrintResult("SELECT * FROM Pilot WHERE id = " + String.valueOf(pid) + ";") < 1){
-					   System.out.println("Please re-enter. There is no pilot with ID " + String.valueOf(pid) + ".");
-					}
-					else{
-					   break;
-					}
-			  } catch (SQLException e) {
-					System.err.println (e.getMessage());
+			System.out.print("Please enter the pilot ID: ");
+			try { // read the integer, parse it and break.
+				pid = Integer.parseInt(in.readLine());
+			} catch (Exception e) {
+				System.out.println("Please re-enter. The pilot ID is an integer.");
+				continue;
+			}//end try
+			
+			System.out.println("\n");
+			
+			try {
+			   if(esql.executeQueryAndPrintResult("SELECT * FROM Pilot WHERE id = " + String.valueOf(pid) + ";") < 1){
+				   System.out.println("Please re-enter. There is no pilot with ID " + String.valueOf(pid) + ".");
 				}
+				else{
+					System.out.println("\n");
+				   break;
+				}
+			} catch (SQLException e) {
+				System.err.println (e.getMessage());
+			}
 		}while (true);
 			
 		return pid;
@@ -466,16 +690,20 @@ public class DBproject{
 				continue;
 			}//end try
 			
+			System.out.println("\n");
+			
 			try {
 			   if(esql.executeQueryAndPrintResult("SELECT * FROM Plane WHERE id = " + String.valueOf(pid) + ";") < 1){
 				   System.out.println("Please re-enter. There is no plane with ID " + String.valueOf(pid) + ".");
 				}
 				else{
-				   break;
+					System.out.println("\n");
+					break;
 				}
-		   } catch (SQLException e) {
+			} catch (SQLException e) {
 				System.err.println (e.getMessage());
 			}
+			
 		}while (true);
 		
 		return pid;
@@ -500,11 +728,14 @@ public class DBproject{
 				continue;
 			}//end try
 			
+			System.out.println("\n");
+			
 			try {
 			   if(esql.executeQueryAndPrintResult("SELECT * FROM Technician WHERE id = " + String.valueOf(techid) + ";") < 1){
 				   System.out.println("Please re-enter. There is no technician with ID " + String.valueOf(techid) + ".");
 				}
 				else{
+					System.out.println("\n");
 				   break;
 				}
 		   } catch (SQLException e) {
@@ -524,15 +755,12 @@ public class DBproject{
 	 * @throws Exception when user input is not an integer
 	 */
 	public static void AddRepair(DBproject esql) {
-	   int rid;
+	   int rid = getRepairID(esql);
 	   String repair_date;
 	   String repair_code; // must be 'MJ', 'MN', or 'SV'
 	   int pilot_id;
 	   int plane_id;
 	   int technician_id;
-	   
-	   //REMOVE ME
-	   rid = 999;
 	   
 	   System.out.println("Please enter the date of repair.");
 	   repair_date = getDate();
@@ -558,23 +786,23 @@ public class DBproject{
 		technician_id = findTechnician(esql);
 		
 		try {
-			esql.executeUpdate("INSERT INTO Repairs (rid, repair_date, repair_code, pilot_id, plane_id, technician_id) VALUES (\'"
-			                 + String.valueOf(rid) + "\', \'"
+			esql.executeUpdate("INSERT INTO Repairs (rid, repair_date, repair_code, pilot_id, plane_id, technician_id) VALUES ("
+			                 + String.valueOf(rid) + ", \'"
 			                 + repair_date + "\', \'"
-			                 + repair_code + "\', \'"
-			                 + pilot_id + "\', \'"
-			                 + plane_id + "\', \'"
-			                 + technician_id
-			                 + "\');");
+			                 + repair_code + "\', "
+			                 + String.valueOf(pilot_id) + ", "
+			                 + String.valueOf(plane_id) + ", "
+			                 + String.valueOf(technician_id)
+			                 + ");");
 			
-			System.out.println("Your entry has been added to the database.\n\n"
-		                     + "New Repair with ID " + "???"
+			System.out.println("\n\nYour entry has been added to the database.\n\n"
+		                     + "New Repair with ID " + String.valueOf(rid)
 		                     + "\nDate of Repair: " + repair_date
 		                     + "\nRepair Code: " + repair_code
-		                     + "\nPilot ID: " + pilot_id
-		                     + "\nPlane ID: " + plane_id
-		                     + "\nTechnician ID: " + technician_id
-		                     );
+		                     + "\nPilot ID: " + String.valueOf(pilot_id)
+		                     + "\nPlane ID: " + String.valueOf(plane_id)
+		                     + "\nTechnician ID: " + String.valueOf(technician_id)
+		                     + "\n\n");
 		} catch (SQLException e) {
 			System.err.println (e.getMessage());
 		}
@@ -589,14 +817,11 @@ public class DBproject{
 	 * @throws Exception when user input is not an integer
 	 */
 	public static void AddPlane(DBproject esql) {//1
-	   int id; // must be unique
+	   int id = getPlaneID(esql); // must be unique
 	   String make; // must be 32 chars or less
 	   String model; // must be 64 chars or less
 	   int age; // must be a year value
 	   int seats; // must be between 0 and 500
-	   
-	   //assign id
-	   id = 67;
 		
 		do{
 			System.out.print("Please enter the plane's make: ");
@@ -672,27 +897,24 @@ public class DBproject{
 		}while (true);
 		
 		try {
-			esql.executeUpdate("INSERT INTO Plane (id, make, model, age, seats) VALUES (\'"
-			                 + String.valueOf(age) + "\', \'"
+			esql.executeUpdate("INSERT INTO Plane (id, make, model, age, seats) VALUES ("
+							+ String.valueOf(id) +  ", \'"
 			                 + make + "\', \'"
-			                 + model + "\', \'"
-			                 + String.valueOf(age) + "\', \'"
+			                 + model + "\', "
+			                 + String.valueOf(age) + ", "
 			                 + String.valueOf(seats)
-			                 + "\');");
+			                 + ");");
 			
-			System.out.println("Your entry has been added to the database.\n\n"
-		                     + "New Plane with ID " + "???"
+			System.out.println("\n\nYour entry has been added to the database.\n\n"
+		                     + "New Plane with ID " + String.valueOf(id)
 		                     + "\nMake: " + make
 		                     + "\nModel: " + model
 		                     + "\nAge: " + String.valueOf(age)
 		                     + "\nNumber of Seats: " + String.valueOf(seats)
-		                     );
+		                     + "\n\n");
 		} catch (SQLException e) {
 			System.err.println (e.getMessage());
 		}
-		
-		//what if they need to edit?
-		// FIXME : increment ID
 	}
 	
    /**
@@ -704,12 +926,9 @@ public class DBproject{
 	 * @throws Exception when user input is not an integer
 	 */
 	public static void AddPilot(DBproject esql) {//2
-	   int id; // must be unique
+	   int id = getPilotID(esql); // must be unique
 	   String fullname; // must be 128 chars or less
 	   String nationality; // must be 24 chars or less
-	   
-      //assign id
-		id = 250;
 
 		do{
 			System.out.print("Please enter the pilot's full name: ");
@@ -744,17 +963,17 @@ public class DBproject{
 		}while (true);
 		
 		try {
-			esql.executeUpdate("INSERT INTO Pilot(id, fullname, nationality) VALUES (\'"
-			               + String.valueOf(id) + "\', \'"
+			esql.executeUpdate("INSERT INTO Pilot(id, fullname, nationality) VALUES ("
+			               + String.valueOf(id) + ", \'"
 			               + fullname + "\', \'"
 			               + nationality
 			               + "\');");
                
-         System.out.println("Your entry has been added to the database.\n\n"
-               + "New Pilot with ID " + "???"
+         System.out.println("\n\nYour entry has been added to the database.\n\n"
+               + "New Pilot with ID " + String.valueOf(id)
                + "\nFull Name: " + fullname
                + "\nNationality: " + nationality
-               );
+               + "\n\n");
       } catch (SQLException e) {
 			System.err.println (e.getMessage());
 		}
@@ -770,7 +989,7 @@ public class DBproject{
 	 */
 	public static void AddFlight(DBproject esql) {//3
 		// Given a pilot, plane and flight, adds a flight in the DB
-		int fnum;
+		int fnum = getFlightID(esql);
 		int cost; // must be >= 0
 		int numsold; // must be > 0
 		int numstops; // must be > 0
@@ -780,12 +999,8 @@ public class DBproject{
 	   String departureairport; // must be 5 chars or less
 	   int pilotid;
 	   int planeid;
-	   int fiid = 2019; //flight info id
-	   int id = 2019; //schedule id
-		
-		//assign fnum, fiid, id
-		//REMOVE ME
-	   fnum = 2019;
+	   int fiid = getFlightInfoID(esql); //flight info id
+	   int id = getScheduleID(esql); //schedule id
 		
 		do {
 			System.out.print("Please enter the cost of the flight: ");
@@ -886,27 +1101,27 @@ public class DBproject{
 		//no statement to get fiid
 		try {
 		   //Insert values into tables
-			esql.executeUpdate("INSERT INTO Flight(fnum, cost, num_sold, num_stops,  actual_departure_date, actual_arrival_date, arrival_airport, departure_airport) VALUES (\'"
-			                  + String.valueOf(fnum) + "\', \'"
-			                  + String.valueOf(cost) + "\', \'"
-			                  + String.valueOf(numsold) + "\', \'"
-			                  + String.valueOf(numstops) + "\', \'"
+			esql.executeUpdate("INSERT INTO Flight(fnum, cost, num_sold, num_stops,  actual_departure_date, actual_arrival_date, arrival_airport, departure_airport) VALUES ("
+			                  + String.valueOf(fnum) + ", "
+			                  + String.valueOf(cost) + ", "
+			                  + String.valueOf(numsold) + ", "
+			                  + String.valueOf(numstops) + ", \'"
 			                  + departureDate + "\', \'"
 			                  + arrivalDate + "\', \'"
-			                  + String.valueOf(arrivalairport) + "\', \'"
-			                  + String.valueOf(departureairport)
+			                  + arrivalairport + "\', \'"
+			                  + departureairport
                            + "\');");
                               
-         esql.executeUpdate("INSERT INTO FlightInfo(fiid, flight_id, pilot_id, plane_id) VALUES (\'"
-                           + String.valueOf(fiid) + "\', \'"
-                           + String.valueOf(fnum) + "\', \'"
-                           + String.valueOf(pilotid) + "\', \'"
+         esql.executeUpdate("INSERT INTO FlightInfo(fiid, flight_id, pilot_id, plane_id) VALUES ("
+                           + String.valueOf(fiid) + ", "
+                           + String.valueOf(fnum) + ", "
+                           + String.valueOf(pilotid) + ", "
                            + String.valueOf(planeid)
-                           + "\');");
+                           + ");");
                            
-         String tmpQuery = "INSERT INTO Schedule(id, flightNum, departure_time, arrival_time) VALUES (\'"
-                           + String.valueOf(id) + "\', \'"
-                           + String.valueOf(fnum) + "\', \'"
+         String tmpQuery = "INSERT INTO Schedule(id, flightNum, departure_time, arrival_time) VALUES ("
+                           + String.valueOf(id) + ", "
+                           + String.valueOf(fnum) + ", \'"
                            + departureDate + "\', \'"
 			               + arrivalDate
                            + "\');";
@@ -914,25 +1129,25 @@ public class DBproject{
          
          //Print information for user
          System.out.println("The following entries been added to the database.\n\n"
-		                     + "New Flight with ID " + "???"
+		                     + "New Flight with ID " + String.valueOf(fnum)
 		                     + "\nCost: " +String.valueOf(cost)
                            + "\nNumber of Tickets Sold: " + String.valueOf(numsold)
                            + "\nNumber of Stops " + String.valueOf(numstops)
                            + "\nDate of Arrival: " + arrivalDate
                            + "\nDate of Departure: " + departureDate
-                           + "\nArrival Airport Code: " + String.valueOf(arrivalairport)
-                           + "\nDeparture Airport Code: " + String.valueOf(departureairport)
+                           + "\nArrival Airport Code: " + arrivalairport
+                           + "\nDeparture Airport Code: " + departureairport
                            + "\n\n"
-                           + "New FlightInfo entry with ID " + "???"
-                           + "\nFlight ID: " + "???"
+                           + "New FlightInfo entry with ID " + String.valueOf(fiid)
+                           + "\nFlight ID: " + String.valueOf(fnum)
                            + "\nPilot ID: " + String.valueOf(pilotid)
                            + "\nPlane ID: " + String.valueOf(planeid)
                            + "\n\n"
-                           + "New Schedule entry with ID " + "???"
-                           + "\nFlight ID: " + "???"
+                           + "New Schedule entry with ID " + String.valueOf(id)
+                           + "\nFlight ID: " + String.valueOf(fnum)
                            + "\nTime of Departure: " + departureDate
                            + "\nTime of Arrival: " + arrivalDate
-		                     );
+		                   + "\n\n");
       } catch (SQLException e) {
 			System.err.println (e.getMessage());
 		}
@@ -947,14 +1162,9 @@ public class DBproject{
 	 * @throws Exception when user input is not an integer
 	 */
 	public static void AddTechnician(DBproject esql) {//4
-	   int id; // must be unique
+	   int id = getTechnicianID(esql); // must be unique
 	   String fullname; // must be 128 chars or less
 	   String nationality; // must be 24 chars or less
-	   
-	   //REMOVE ME
-	   id = 999;
-	   
-	   //assign id
 		
 		do{
 			System.out.print("Please enter the technician's full name: ");
@@ -977,12 +1187,12 @@ public class DBproject{
 		}while (true);
 		
 		try {
-			esql.executeUpdate("INSERT INTO Technician(id, full_name) VALUES (\'" + String.valueOf(id) + "\', \'" + fullname + "\');");
+			esql.executeUpdate("INSERT INTO Technician(id, full_name) VALUES (" + String.valueOf(id) + ", \'" + fullname + "\');");
                
-         System.out.println("Your entry has been added to the database.\n\n"
-            + "New Technician with ID " + "???"
+         System.out.println("\n\nYour entry has been added to the database.\n\n"
+            + "New Technician with ID " + String.valueOf(id)
             + "\nFull Name: " + fullname
-            );
+            + "\n\n");
       } catch (SQLException e) {
 			System.err.println (e.getMessage());
 		}
@@ -998,14 +1208,10 @@ public class DBproject{
 	 */
 	public static void BookFlight(DBproject esql) {//5
 		// Given a customer and a flight that he/she wants to book, add a reservation to the DB
-		int rnum; // reservation number
+		int rnum = getReservationID(esql); // reservation number
 		int cid; // customer id
 		int fid; // flight id
 		String status; // 'W', 'C', or 'R'
-		
-		//we assign the rnum
-		//REMOVE ME
-	   rnum = 999;
 		
 		do {
 			System.out.print("Please enter the customer ID: ");
@@ -1065,74 +1271,22 @@ public class DBproject{
 		}
 		
 		try {
-			esql.executeUpdate("INSERT INTO Reservation(rnum, cid, fid, status) VALUES (\'"
-			      + String.valueOf(rnum) + "\', \'"
-			      + String.valueOf(cid)+ "\', \'"
-			      + String.valueOf(fid) + "\', \'"
+			esql.executeUpdate("INSERT INTO Reservation(rnum, cid, fid, status) VALUES ("
+			      + String.valueOf(rnum) + ", "
+			      + String.valueOf(cid)+ ", "
+			      + String.valueOf(fid) + ", \'"
 			      + status
 			      + "\');");
             
-			System.out.println("Your entry has been added to the database.\n\n"
-               + "New Reservation with ID " + "???"
+			System.out.println("\n\nYour entry has been added to the database.\n\n"
+               + "New Reservation with ID " + String.valueOf(rnum)
                + "\nCustomer ID: " + cid
                + "\nFlight ID: " + fid
                + "\nReservation Status: " + status
-               );
+               + "\n\n");
       } catch (SQLException e) {
 			System.err.println (e.getMessage());
       }
-	}
-
-   /**
-	 * Method to ask the user for a flight number and date and prints the number of available seats.
-	 * 
-	 * @param DBproject
-	 * @return seats available
-	 * @throws java.sql.SQLException when failed to execute the query
-	 * @throws Exception when user input is not an integer
-	 */
-	public static int ListNumberOfAvailableSeats(DBproject esql) {//6
-		// For flight number and date, find the number of available seats (i.e. total plane capacity minus booked seats )
-		
-		int fid = findFlight(esql);
-		int available = -1;
-		List<List<String>> result;
-		
-		do{
-			System.out.println("Please enture the departure date of the flight.");
-			String date = getDate();
-			
-			String query = "SELECT (CAST(seats AS int4) - CAST(num_sold AS int4)) FROM Plane P, FlightInfo FI, Schedule S, Flight F WHERE"
-				+ " FI.plane_id = P.id"
-				+ " AND FI.flight_id = " + String.valueOf(fid)
-				+ " AND S.departure_time = \'" + date + "\'"
-				+ " AND S.flightNum = " + String.valueOf(fid)
-				+ " AND F.fnum = " + String.valueOf(fid)
-				+ ";";
-			
-			try {
-				if(esql.executeQuery(query) < 1){
-					System.out.println("This flight is not scheduled on that date. Please re-enter.");
-					continue;
-				}
-			   result = esql.executeQueryAndReturnResult(query);
-				
-				System.out.println("The number of avaiable seats for flight " + String.valueOf(fid) + " on " + date + " is:\n" + result.get(0).get(0));
-			
-				try {
-				   available = Integer.parseInt(result.get(0).get(0));
-				   break;
-				}catch (Exception e) {
-					System.out.println("Internal error in ListNumberOfAvailableSeats().");
-				}
-			
-			  } catch (SQLException e) {
-					System.err.println (e.getMessage());
-			  }
-		  }while (true) ;
-		
-		
-		return available;
 	}
 	
 	/**
@@ -1144,11 +1298,15 @@ public class DBproject{
 	 * @throws Exception when user input is not an integer
 	 */
 	public static int ListNumberOfAvailableSeats(DBproject esql, int fnum) {//6
-		// For flight number and date, find the number of available seats (i.e. total plane capacity minus booked seats )
+		// For flight number and date, find the number of available seats (i.e. total plane capacity minus booked seats )	
 		
 		int fid = fnum;
 		int available = -1;
 		List<List<String>> result;
+		
+		if(fnum == -1){
+			fid = findFlight(esql);
+		}
 		
 		do{
 			System.out.println("Please enture the departure date of the flight.");
@@ -1161,21 +1319,22 @@ public class DBproject{
 				+ " AND S.flightNum = " + String.valueOf(fid)
 				+ " AND F.fnum = " + String.valueOf(fid)
 				+ ";";
-			
+						
 			try {
 				if(esql.executeQuery(query) < 1){
 					System.out.println("This flight is not scheduled on that date. Please re-enter.");
 					continue;
 				}
 			   result = esql.executeQueryAndReturnResult(query);
-							
+	
 				try {
 				   available = Integer.parseInt(result.get(0).get(0));
+				   System.out.println("\nThe number of available seats for flight " + String.valueOf(fid) + " on " + date + " is " + String.valueOf(available) + ".\n\n");
 				   break;
 				}catch (Exception e) {
 					System.out.println("Internal error in ListNumberOfAvailableSeats().");
 				}
-			
+				
 			  } catch (SQLException e) {
 					System.err.println (e.getMessage());
 			  }
@@ -1205,6 +1364,8 @@ public class DBproject{
       } catch (SQLException e) {
 			System.err.println (e.getMessage());
       }
+      
+      System.out.println("\n");
 	}
 
    /**
@@ -1215,16 +1376,20 @@ public class DBproject{
 	 * @throws java.sql.SQLException when failed to execute the query
 	 */
 	public static void ListTotalNumberOfRepairsPerYear(DBproject esql) {//8
-      try {
-		   esql.executeQueryAndPrintResult(
-   		   "SELECT EXTRACT(YEAR FROM repair_date) AS Year, COUNT(rid)"
-   		   + " FROM Repairs"
-   		   + " GROUP BY Year"
-   		   + " ORDER BY COUNT(rid)"
-   		   + ";");
-      } catch (SQLException e) {
-			System.err.println (e.getMessage());
-      }
+		System.out.println("\n");
+		
+		  try {
+			   esql.executeQueryAndPrintResult(
+			   "SELECT EXTRACT(YEAR FROM repair_date) AS Year, COUNT(rid)"
+			   + " FROM Repairs"
+			   + " GROUP BY Year"
+			   + " ORDER BY COUNT(rid)"
+			   + ";");
+		  } catch (SQLException e) {
+				System.err.println (e.getMessage());
+		  }
+		  
+		  System.out.println("\n");
 	}
 	
 	/**
@@ -1263,8 +1428,10 @@ public class DBproject{
    		   + " AND R.status = \'"
    		   + passengerStatus
    		   + "\';");
-      } catch (SQLException e) {
-			System.err.println (e.getMessage());
-      }
+		  } catch (SQLException e) {
+				System.err.println (e.getMessage());
+		  }
+		  
+		System.out.println("\n");
 	}
 }
