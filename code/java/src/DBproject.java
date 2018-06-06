@@ -388,24 +388,25 @@ public class DBproject{
 	public static int findFlight(DBproject esql) {
 	   int fid;
 	   do {
-			System.out.print("Please enter the flight ID: ");
-			try { // read the integer, parse it and break.
-				fid = Integer.parseInt(in.readLine());
-			} catch (Exception e) {
-				System.out.println("Please re-enter. The flight ID is an integer.");
-				continue;
-			}//end try
-			
-			try {
-			   if(esql.executeQueryAndPrintResult("SELECT * FROM Flight WHERE fnum = " + String.valueOf(fid) + ";") < 1){
-   			   System.out.println("Please re-enter. There is no flight with ID " + String.valueOf(fid) + ".");
-   			}
-   			else{
-   			   break;
-   			}
-         } catch (SQLException e) {
-   			System.err.println (e.getMessage());
-   		}
+				System.out.print("Please enter the flight ID: ");
+				try { // read the integer, parse it and break.
+					fid = Integer.parseInt(in.readLine());
+				} catch (Exception e) {
+					System.out.println("Please re-enter. The flight ID is an integer.");
+					continue;
+				}//end try
+				
+				
+				try {
+				   if(esql.executeQueryAndPrintResult("SELECT * FROM Flight WHERE fnum = " + String.valueOf(fid) + ";") < 1){
+					   System.out.println("Please re-enter. There is no flight with ID " + String.valueOf(fid) + ".");
+					}
+					else{
+					   break;
+					}
+			  } catch (SQLException e) {
+					System.err.println (e.getMessage());
+				}
 		}while (true);
 		
 		return fid;
@@ -432,10 +433,6 @@ public class DBproject{
 				
 				
 				try {
-					
-				System.out.println("SELECT * FROM Pilot WHERE id = " + String.valueOf(pid) + ";");
-				System.out.println(String.valueOf(esql.executeQueryAndPrintResult("SELECT * FROM Pilot WHERE id = " + String.valueOf(pid) + ";")));
-					
 				   if(esql.executeQueryAndPrintResult("SELECT * FROM Pilot WHERE id = " + String.valueOf(pid) + ";") < 1){
 					   System.out.println("Please re-enter. There is no pilot with ID " + String.valueOf(pid) + ".");
 					}
@@ -783,12 +780,12 @@ public class DBproject{
 	   String departureairport; // must be 5 chars or less
 	   int pilotid;
 	   int planeid;
-	   int fiid = 999; //flight info id
-	   int id = 999; //schedule id
+	   int fiid = 2019; //flight info id
+	   int id = 2019; //schedule id
 		
 		//assign fnum, fiid, id
 		//REMOVE ME
-	   fnum = 999;
+	   fnum = 2019;
 		
 		do {
 			System.out.print("Please enter the cost of the flight: ");
@@ -889,13 +886,13 @@ public class DBproject{
 		//no statement to get fiid
 		try {
 		   //Insert values into tables
-			esql.executeUpdate("INSERT INTO Flight(fnum, cost, num_sold, num_stops, actual_arrival_date, actual_departure_date, arrival_airport, departure_airport) VALUES (\'"
+			esql.executeUpdate("INSERT INTO Flight(fnum, cost, num_sold, num_stops,  actual_departure_date, actual_arrival_date, arrival_airport, departure_airport) VALUES (\'"
 			                  + String.valueOf(fnum) + "\', \'"
 			                  + String.valueOf(cost) + "\', \'"
 			                  + String.valueOf(numsold) + "\', \'"
 			                  + String.valueOf(numstops) + "\', \'"
-			                  + arrivalDate + "\', \'"
 			                  + departureDate + "\', \'"
+			                  + arrivalDate + "\', \'"
 			                  + String.valueOf(arrivalairport) + "\', \'"
 			                  + String.valueOf(departureairport)
                            + "\');");
@@ -907,12 +904,13 @@ public class DBproject{
                            + String.valueOf(planeid)
                            + "\');");
                            
-         esql.executeUpdate("INSERT INTO Schedule(id, flightNum, departure_time, arrival_time) VALUES (\'"
+         String tmpQuery = "INSERT INTO Schedule(id, flightNum, departure_time, arrival_time) VALUES (\'"
                            + String.valueOf(id) + "\', \'"
                            + String.valueOf(fnum) + "\', \'"
                            + departureDate + "\', \'"
-			               + arrivalDate + "\', \'"
-                           + "\');");
+			               + arrivalDate
+                           + "\');";
+         esql.executeUpdate(tmpQuery);
          
          //Print information for user
          System.out.println("The following entries been added to the database.\n\n"
@@ -1028,7 +1026,7 @@ public class DBproject{
 		
 		fid = findFlight(esql);
 		
-		boolean flightisfull = (ListNumberOfAvailableSeats(esql) <= 0);
+		boolean flightisfull = (ListNumberOfAvailableSeats(esql, fid) <= 0);
 		
 		if(flightisfull){
 		   System.out.println("Flight " + String.valueOf(fid) + " is full. The reservation will be placed on the waitlist.");
@@ -1059,7 +1057,7 @@ public class DBproject{
    		}while (true);
    		
    		try {
-   			esql.executeUpdate("UPDATE Flight SET numsold = numsold + 1 WHERE fnum = " + String.valueOf(fid) + ";");
+   			esql.executeUpdate("UPDATE Flight SET num_sold = num_sold + 1 WHERE fnum = " + String.valueOf(fid) + ";");
    			System.out.println("The ticket has been sold to customer " + String.valueOf(cid));
          } catch (SQLException e) {
    			System.err.println (e.getMessage());
@@ -1100,35 +1098,93 @@ public class DBproject{
 		int available = -1;
 		List<List<String>> result;
 		
-		System.out.println("Please enture the departure date of the flight.");
-		String date = getDate();
-		
-		try {
-		   result = esql.executeQueryAndReturnResult(
-            "SELECT DIFFERENCE(seats, num_sold) FROM Plane P, FlightInfo FI, Schedule S, Flight F WHERE"
-            + " FI.plane_id = P.id"
-            + " AND FI.flight_id = " + String.valueOf(fid)
-            + " AND S.departure_time = " + date
-            + " AND S.flightNum = " + String.valueOf(fid)
-            + " AND F.fnum = " + String.valueOf(fid)
-            + " AND F.actual_departure_date = " + date
-            + ";");
-            
-            System.out.println("The number of avaiable seats for flight " + String.valueOf(fid) + " on " + date + " is:\n" + result.get(0).get(0));
-		
+		do{
+			System.out.println("Please enture the departure date of the flight.");
+			String date = getDate();
+			
+			String query = "SELECT (CAST(seats AS int4) - CAST(num_sold AS int4)) FROM Plane P, FlightInfo FI, Schedule S, Flight F WHERE"
+				+ " FI.plane_id = P.id"
+				+ " AND FI.flight_id = " + String.valueOf(fid)
+				+ " AND S.departure_time = \'" + date + "\'"
+				+ " AND S.flightNum = " + String.valueOf(fid)
+				+ " AND F.fnum = " + String.valueOf(fid)
+				+ ";";
+			
 			try {
-			   available = Integer.parseInt(result.get(0).get(0));
-			}catch (Exception e) {
-				System.out.println("Internal error in ListNumberOfAvailableSeats().");
-			}
-		
-		  } catch (SQLException e) {
-				System.err.println (e.getMessage());
-		  }
+				if(esql.executeQuery(query) < 1){
+					System.out.println("This flight is not scheduled on that date. Please re-enter.");
+					continue;
+				}
+			   result = esql.executeQueryAndReturnResult(query);
+				
+				System.out.println("The number of avaiable seats for flight " + String.valueOf(fid) + " on " + date + " is:\n" + result.get(0).get(0));
+			
+				try {
+				   available = Integer.parseInt(result.get(0).get(0));
+				   break;
+				}catch (Exception e) {
+					System.out.println("Internal error in ListNumberOfAvailableSeats().");
+				}
+			
+			  } catch (SQLException e) {
+					System.err.println (e.getMessage());
+			  }
+		  }while (true) ;
 		
 		
 		return available;
 	}
+	
+	/**
+	 * Method to ask the user for a date and prints the number of available seats.
+	 * 
+	 * @param DBproject
+	 * @return seats available
+	 * @throws java.sql.SQLException when failed to execute the query
+	 * @throws Exception when user input is not an integer
+	 */
+	public static int ListNumberOfAvailableSeats(DBproject esql, int fnum) {//6
+		// For flight number and date, find the number of available seats (i.e. total plane capacity minus booked seats )
+		
+		int fid = fnum;
+		int available = -1;
+		List<List<String>> result;
+		
+		do{
+			System.out.println("Please enture the departure date of the flight.");
+			String date = getDate();
+			
+			String query = "SELECT (CAST(seats AS int4) - CAST(num_sold AS int4)) FROM Plane P, FlightInfo FI, Schedule S, Flight F WHERE"
+				+ " FI.plane_id = P.id"
+				+ " AND FI.flight_id = " + String.valueOf(fid)
+				+ " AND S.departure_time = \'" + date + "\'"
+				+ " AND S.flightNum = " + String.valueOf(fid)
+				+ " AND F.fnum = " + String.valueOf(fid)
+				+ ";";
+			
+			try {
+				if(esql.executeQuery(query) < 1){
+					System.out.println("This flight is not scheduled on that date. Please re-enter.");
+					continue;
+				}
+			   result = esql.executeQueryAndReturnResult(query);
+							
+				try {
+				   available = Integer.parseInt(result.get(0).get(0));
+				   break;
+				}catch (Exception e) {
+					System.out.println("Internal error in ListNumberOfAvailableSeats().");
+				}
+			
+			  } catch (SQLException e) {
+					System.err.println (e.getMessage());
+			  }
+		  }while (true) ;
+			
+		
+		return available;
+	}
+
 
    /**
 	 * Method to count the number of repairs per plane and list them in descending order.
@@ -1140,11 +1196,11 @@ public class DBproject{
 	public static void ListsTotalNumberOfRepairsPerPlane(DBproject esql) {//7
       try {
 		   esql.executeQueryAndPrintResult(
-   		   "SELECT P.id, COUNT(R.rid), R.rid"
+   		   "SELECT P.id, COUNT(R.rid)"
    		   + " FROM Plane P, Repairs R"
    		   + " WHERE P.id = R.plane_id"
    		   + " GROUP BY P.id"
-   		   + " ORDER BY R.rid DESC"
+   		   + " ORDER BY COUNT(R.rid) DESC"
    		   + ";");
       } catch (SQLException e) {
 			System.err.println (e.getMessage());
@@ -1161,10 +1217,10 @@ public class DBproject{
 	public static void ListTotalNumberOfRepairsPerYear(DBproject esql) {//8
       try {
 		   esql.executeQueryAndPrintResult(
-   		   "SELECT COUNT(rid), rid"
+   		   "SELECT EXTRACT(YEAR FROM repair_date) AS Year, COUNT(rid)"
    		   + " FROM Repairs"
-   		   + " GROUP BY YEAR(repair_date)"
-   		   + " ORDER BY rid ASC"
+   		   + " GROUP BY Year"
+   		   + " ORDER BY COUNT(rid)"
    		   + ";");
       } catch (SQLException e) {
 			System.err.println (e.getMessage());
@@ -1179,12 +1235,34 @@ public class DBproject{
 	 * @throws java.sql.SQLException when failed to execute the query
 	 */
 	public static void FindPassengersCountWithStatus(DBproject esql) {//9
+		int fid = findFlight(esql);
+		String passengerStatus;
+		
+		do{
+			System.out.print("Please enter the desired passenger status: ");
+			try {
+   			passengerStatus = in.readLine();
+   			if(!passengerStatus.equals("W") && !passengerStatus.equals("C") && !passengerStatus.equals("R")){
+   			   System.out.println("Please re-enter. Valid passenger statuses are \'W\', \'C\', or \'R\'.");
+   			}
+   			else{
+   			   break;
+   			}
+			} catch (Exception e) {
+				System.out.println("Please re-enter. There was an error in reading the line.");
+				continue;
+			}
+		}while (true);
+		
 		try {
 		   esql.executeQueryAndPrintResult(
-   		   "SELECT COUNT(rnum), cid"
-   		   + " FROM Reservation"
-   		   + " GROUP BY status"
-   		   + ";");
+   		   "SELECT COUNT(rnum)"
+   		   + " FROM Reservation R"
+   		   + " WHERE R.fid = "
+   		   + String.valueOf(fid)
+   		   + " AND R.status = \'"
+   		   + passengerStatus
+   		   + "\';");
       } catch (SQLException e) {
 			System.err.println (e.getMessage());
       }
